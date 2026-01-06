@@ -13,7 +13,7 @@ router.post('/signup', async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ userId: user._id }, 'MY_SECRET_KEY');
-    res.send({ token },{user});
+    res.send({user});
   } catch (err) {
     return res.status(422).send(err.message);
   }
@@ -28,13 +28,13 @@ router.post('/signin', async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(422).send({ error: 'Invalid password or email' });
+    return res.status(422).send({ error: 'Invalid password or email',`received data is ${email}${password}` });
   }
 
   try {
     await user.comparePassword(password);
     const token = jwt.sign({ userId: user._id }, 'MY_SECRET_KEY');
-    res.send({ token },{user});
+    res.send({user});
   } catch (err) {
     return res.status(422).send({ error: 'Invalid password or email' });
   }
