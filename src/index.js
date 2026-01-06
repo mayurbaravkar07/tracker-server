@@ -6,9 +6,14 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const trackRoutes = require("./routes/trackRoutes");
 const requireAuth = require("./middlewares/requireAuth");
+const cors = require('cors');
+
 
 const app = express();
-
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(authRoutes);
 app.use(trackRoutes);
