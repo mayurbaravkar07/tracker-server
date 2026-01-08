@@ -43,4 +43,21 @@ res.send({ user, token });
   }
 });
 
+router.get('/profile', async (req, res) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  
+  if (!token) {
+    return res.status(401).send({ error: 'No token provided' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'MY_SECRET_KEY');
+    const user = await User.findById(decoded.userId);
+    res.send({ user });
+  } catch (err) {
+    res.status(401).send({ error: 'Invalid token' });
+  }
+});
+
+
 module.exports = router;
