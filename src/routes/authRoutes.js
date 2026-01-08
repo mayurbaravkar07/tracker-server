@@ -13,6 +13,12 @@ router.post('/signup', async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ userId: user._id }, 'MY_SECRET_KEY');
+    res.cookie('session_token', token, {
+        maxAge: 900000, // Cookie expiration time (e.g., 15 minutes)
+        httpOnly: true, // Prevents client-side JavaScript from reading the cookie (security enhancement)
+        secure: true, // Must be true for cross-site (SameSite=None) in production (requires HTTPS)
+        sameSite: 'None', // Required for cross-site requests. Use 'Lax' or 'Strict' if on the same domain
+    });
     res.send({user});
   } catch (err) {
     return res.status(422).send(err.message);
@@ -34,6 +40,12 @@ router.post('/signin', async (req, res) => {
   try {
     await user.comparePassword(password);
     const token = jwt.sign({ userId: user._id }, 'MY_SECRET_KEY');
+    res.cookie('session_token', token, {
+        maxAge: 900000, // Cookie expiration time (e.g., 15 minutes)
+        httpOnly: true, // Prevents client-side JavaScript from reading the cookie (security enhancement)
+        secure: true, // Must be true for cross-site (SameSite=None) in production (requires HTTPS)
+        sameSite: 'None', // Required for cross-site requests. Use 'Lax' or 'Strict' if on the same domain
+    });
     res.send({user});
   } catch (err) {
     return res.status(422).send({ error: 'Invalid password or email' });
